@@ -1,13 +1,21 @@
+  //For Importing Images 
+
 import bot from './assets/bot.svg';
 import user from './assets/user.svg';
+
+  // To Target HTML Elements Manually
 
 const form = document.querySelector('form');
 const chatContainer = document.querySelector('#chat_container');
 
 let loadInterval;
 
+  // Function To Load Our Messages
+  // Every 300 Miliseconds We Have To Add . To .Element Textcontent
+  // When Our Loading Indicator Has Reached 3 Dots We Have To Reset It 
+
 function loader(element){
- element.textContent = '';
+ element.textContent = '';  // To ensure it's empety at start
 
  loadInterval = setInterval(() => {
     element.textContent += '.';
@@ -15,8 +23,10 @@ function loader(element){
     if (element.textContent === '....'){
       element.textContent ='';
     }
- },300)
+ },300) 
 }
+
+  // Function To Display Text In Continuos Way
 
 function typeText(element,text){
   let index =0;
@@ -31,6 +41,7 @@ function typeText(element,text){
   },20)
 }
 
+  // Function To generate Unique ID By Using Time,Date,Random Number And Hexadecimal String 
 function generateUniqueId(){
   const timestamp = Date.now();
   const randomNumber = Math.random();
@@ -39,6 +50,7 @@ function generateUniqueId(){
   return `id-${timestamp}-${hexadecimalString}`;
 }
 
+  // Function To Create ChatSripe For Front End Of Our And AI Conversation
 function chatStripe  (isAi, value , uniqueId) {
   return (
     `
@@ -54,20 +66,29 @@ function chatStripe  (isAi, value , uniqueId) {
       </div>
     </div>
     `
+    //Used Template String
+    //We have rendered value in  ${value}
   )
 }
+
+  // Function To Trigger For Getting AI Generated Response
+  // Used e.preventDefualt to prevent default behaviour of browser of reloading when submitting a form
 
 const handleSumbit = async (e) =>{
 e.preventDefault();
 
+  //Get Data That We Type In Form
+
 const data =new FormData(form);
 
-  //User's chatStrip
+  //User's chatStripe
   chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
 
-  form.reset();
+  form.reset(); // To Clear Input
 
   //Bot's chatstripe
+  // Chatcontainer to scroll as we type the message
+
   const uniqueId = generateUniqueId();
   chatContainer.innerHTML += chatStripe(true, " ",uniqueId);
 
@@ -77,7 +98,7 @@ const data =new FormData(form);
 
   loader(messageDiv);
 
-  // fetch data from server -> bot's response 
+  // Fetch Data From Server -> Bot's Response 
 
   const response = await fetch('https://chatgpt-v5qt.onrender.com',{
     method: 'POST',
@@ -105,6 +126,9 @@ const data =new FormData(form);
 }
 
 }
+
+  // Hold values of submit
+  // EventLister to user "ENTER" key to submit
 
 form.addEventListener('submit', handleSumbit);
 form.addEventListener('keyup', (e) => {
