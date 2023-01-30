@@ -8,7 +8,7 @@ dotenv.config();
 
 console.log(process.env.OPENAI_API_KEY)
 
-   //  
+   // new configration is a function which accepts object
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 
@@ -17,17 +17,27 @@ const configuration = new Configuration({
     // Instance Of OpenAI
 const openai = new OpenAIApi(configuration);
 
+    // Initilize express application
+    // Cors allows our server to be called from Front-End
+    // Pass JSON from front end to backend
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+    //To Create Dummy Route Rout 
+    // From Get Route We Can receive Data From FrontEnd
 app.get('/' , async (req,res) => {
     res.status(200).send({
-        message: 'Hello From cipher',
+        message: 'Hello From Cipher',
 
     })
 });
 
+    // Post Allows Us To Have Body/Payload
+    // Prompt Passed From Front-End
+    // Temperature is amount of  risk
+    // Max Tokens allows us to get Long/Short Responces
+    // Frequency Penlaity helps us to control similar responces frequency 
 app.post('/', async (req,res) => {
     try {
        const prompt =req.body.prompt;
@@ -43,6 +53,7 @@ app.post('/', async (req,res) => {
 
        });
 
+       // Send Data To Front-End
        res.status(200).send({
         bot: response.data.choices[0].text
        })
@@ -53,6 +64,6 @@ app.post('/', async (req,res) => {
     }
 })
 
-
+  // Server Listening 
 app.listen(5000,() => console.log(' Server is running on port http://localhost:5000'));
 
